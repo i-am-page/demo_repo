@@ -11,13 +11,13 @@ on:
 
 jobs:
   ci-be:
-    if: |
-      startsWith(github.event.head_commit.message, 'DEPLOY')
+    # if: |
+    #   startsWith(github.event.head_commit.message, 'DEPLOY')
     runs-on: ubuntu-24.04
     steps:
       - name: test
         run: | 
-          echo ${{github.event_name}}
+          echo ${{github.event_name}}, ${{github.event.head_commit.message}}
       - name: nothing new
         run: |
           echo nothing new
