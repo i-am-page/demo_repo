@@ -1,26 +1,60 @@
+# name: Test Pipeline
+
+# on:
+# #   push:
+# #     branches: [ "demo" ]
+#   pull_request:
+#     types: [closed]
+#     branches: ["main"]
+#   workflow_dispatch:
+
+
+# jobs:
+#   check-changes:
+#     # if: |
+#     #     github.event.pull_request.merged == true
+#     # #   startsWith(github.event.head_commit.message, 'DEPLOY') ||
+#     runs-on: ubuntu-24.04   
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
+
+#       - name: Check if folder "my-folder" has changed
+#         run: |
+#           # Check for changes in the "my-folder" directory
+#           git diff --exit-code --quiet HEAD~1 HEAD -- my-folder/
+#         continue-on-error: true
+
+#       - name: Run workflow if folder changed
+#         if: ${{ steps.check-changes.outcome == 'failure' }}
+#         run: |
+#           echo "Folder 'my-folder' has changed. Running the rest of the pipeline."
+#           # Add additional steps for the workflow here.
+
 name: Test Pipeline
 
 on:
   push:
-    branches: [ "demo" ]
+    branches: [ "main" ]
   pull_request:
-    types: [closed]
-    branches: ["main"]
-  workflow_dispatch:
-
+    branches: [ "main" ]
 
 jobs:
-  ci-be:
-    # if: |
-    #   startsWith(github.event.head_commit.message, 'DEPLOY')
-    runs-on: ubuntu-24.04
+  check-changes:
+    runs-on: ubuntu-24.04 
+
     steps:
-      - name: test
-        run: | 
-          echo ${{github.event_name}}
-      - name: nothing new
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Check if folder "my-folder" has changed
         run: |
-          echo ${{github.event.head_commit.message}}
-      - name: json event
-        run: 
-          echo ${{ toJson(github.event) }}"
+          # Check for changes in the "my-folder" directory
+          git diff --exit-code --quiet HEAD~1 HEAD -- src/
+        continue-on-error: true
+
+      - name: Run workflow if folder changed
+        if: ${{ steps.check-changes.outcome == 'failure' }}
+        run: |
+          echo "Folder 'src' has changed. Running the rest of the pipeline."
+          # Add additional steps for the workflow here.
