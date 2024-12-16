@@ -9,9 +9,9 @@ on:
 
 jobs:
   ci-be:
-    if: |
-      startsWith(github.event.head_commit.message, 'DEPLOY/FULL') || 
-      startsWith(github.event.head_commit.message, 'DEPLOY/BE')
+    # if: |
+    #   startsWith(github.event.head_commit.message, 'DEPLOY/FULL') || 
+    #   startsWith(github.event.head_commit.message, 'DEPLOY/BE')
     runs-on: ubuntu-24.04
     steps:
       - name: clone repo
@@ -20,4 +20,4 @@ jobs:
       
       - name: test
         run: | 
-          echo HelloWorld!!
+          echo ${{github.event_name}}
