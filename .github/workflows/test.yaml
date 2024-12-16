@@ -40,23 +40,29 @@ on:
 #     branches: [ "main" ]
 
 jobs:
-  check-changes:
-    runs-on: ubuntu-24.04 
-
+  check_changes:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout the code
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
 
-      - name: Check if folder "my-folder" has changed
+      - name: Check if 'src/' folder has changes
         run: |
-          # Check for changes in the "my-folder" directory
+          git fetch --prune --unshallow
           git diff --exit-code --quiet HEAD~1 HEAD -- src/
-        continue-on-error: true
+        continue-on-error: true  # To allow the workflow to continue even if changes are not found
 
-      - name: Run workflow if folder changed
-        if: ${{ steps.check-changes.outcome == 'failure' }}
+      - name: Set output for folder change
+        id: check_changes
         run: |
-          echo "Folder 'src' has changed. Running the rest of the pipeline."
-          # Add additional steps for the workflow here.
+          if git diff --exit-code --quiet HEAD~1 HEAD -- src/; then
+            echo "No changes in 'src/' folder."
+            echo "folder_changed=false" >> $GITHUB_ENV
+          else
+            echo "Changes detected in 'src/' folder."
+            echo "folder_changed=true" >> $GITHUB_ENV
+          fi
+
+      - name: Display folder change status
+        run: | 
+          echo "Folder changed: $folder_changed"
