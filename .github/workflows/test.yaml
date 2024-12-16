@@ -1,0 +1,23 @@
+name: Test Pipeline
+
+on:
+  push:
+    branches: [ "demo" ]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  ci-be:
+    if: |
+      startsWith(github.event.head_commit.message, 'DEPLOY/FULL') || 
+      startsWith(github.event.head_commit.message, 'DEPLOY/BE')
+    runs-on: ubuntu-24.04
+    steps:
+      - name: clone repo
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+        uses: actions/checkout@v4
+      
+      - name: test
+        run: | 
+          echo HelloWorld!!
